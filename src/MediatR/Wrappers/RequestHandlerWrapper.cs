@@ -1,5 +1,6 @@
 namespace MediatR.Wrappers;
 
+using MediatR.Internal;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,7 +9,6 @@ public abstract class RequestHandlerBase : HandlerBase
 {
     public abstract Task<object?> Handle(object request, CancellationToken cancellationToken,
         ServiceFactory serviceFactory);
-
 }
 
 public abstract class RequestHandlerWrapper<TResponse> : RequestHandlerBase
@@ -31,7 +31,7 @@ public class RequestHandlerWrapperImpl<TRequest, TResponse> : RequestHandlerWrap
 
         return serviceFactory
             .GetInstances<IPipelineBehavior<TRequest, TResponse>>()
-            .Reverse()
+            .BetterReverse()
             .Aggregate((RequestHandlerDelegate<TResponse>) Handler, (next, pipeline) => () => pipeline.Handle((TRequest)request, cancellationToken, next))();
     }
 }

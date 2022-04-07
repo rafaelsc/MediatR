@@ -1,5 +1,6 @@
 namespace MediatR.Wrappers;
 
+using MediatR.Internal;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -34,7 +35,7 @@ internal class StreamRequestHandlerWrapperImpl<TRequest, TResponse> : StreamRequ
 
         var items = serviceFactory
             .GetInstances<IStreamPipelineBehavior<TRequest, TResponse>>()
-            .Reverse()
+            .BetterReverse()
             .Aggregate(
                 (StreamHandlerDelegate<TResponse>) Handler, 
                 (next, pipeline) => () => pipeline.Handle(
